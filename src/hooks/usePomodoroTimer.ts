@@ -96,7 +96,7 @@ const usePomodoroTimer = (): TimerState => {
     } else {
       setIsActive(true);
     }
-    setCycleCompleteMessage(null); // Clear cycle complete message when starting
+    // setCycleCompleteMessage(null);
   };
 
   const pause = () => {

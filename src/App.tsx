@@ -1,5 +1,3 @@
-// src/App.tsx
-import React from 'react';
 import Timer from './components/Timer';
 import Menu from './components/Menu';
 import usePomodoroTimer from './hooks/usePomodoroTimer';
@@ -19,7 +17,7 @@ const App = () => {
     shortBreakDuration, 
     longBreakDuration,
     cycle,
-    cycleCompleteMessage // Destructure the cycle complete message
+    cycleCompleteMessage
   } = usePomodoroTimer();
 
   const handleStartPause = () => {

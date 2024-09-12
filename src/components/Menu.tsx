@@ -1,4 +1,3 @@
-// src/components/Menu.tsx
 import React from 'react';
 
 interface MenuProps {
@@ -8,6 +7,7 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ onSelectPhase, selectedPhase }) => {
   return (
+    //TODO: Include theme-appropriate coloring
     <div>
       <button onClick={() => onSelectPhase('work')} style={{ backgroundColor: selectedPhase === 'work' ? 'lightgray' : '' }}>Work</button>
       <button onClick={() => onSelectPhase('shortBreak')} style={{ backgroundColor: selectedPhase === 'shortBreak' ? 'lightgray' : '' }}>Short Break</button>

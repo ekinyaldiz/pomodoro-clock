@@ -1,11 +1,10 @@
-// src/components/Controls.tsx
 import React from 'react';
 
 interface ControlsProps {
   onStart: () => void;
   onPause: () => void;
   onReset: () => void;
-  onContinue: () => void; // New prop for continue functionality
+  onContinue: () => void;
   isActive: boolean;
   isPaused: boolean;
   currentPhase: string;
