@@ -17,7 +17,8 @@ const App = () => {
     shortBreakDuration, 
     longBreakDuration,
     cycle,
-    cycleCompleteMessage
+    cycleCompleteMessage,
+    buttonLabel
   } = usePomodoroTimer();
 
   const handleStartPause = () => {
@@ -42,10 +43,10 @@ const App = () => {
         selectedPhase={selectedPhase} 
         workDuration={workDuration} 
         shortBreakDuration={shortBreakDuration} 
-        longBreakDuration={longBreakDuration} 
+        longBreakDuration={longBreakDuration}
       />
       <button onClick={handleStartPause}>
-        {isActive ? 'Pause' : 'Start'}
+        {buttonLabel}
       </button>
       <button onClick={fastForward}>
         Fast Forward

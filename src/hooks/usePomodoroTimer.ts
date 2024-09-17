@@ -16,6 +16,7 @@ interface TimerState {
   longBreakDuration: number;
   cycle: number;
   cycleCompleteMessage: string | null;
+  buttonLabel: string;
 }
 
 const usePomodoroTimer = (): TimerState => {
@@ -32,29 +33,31 @@ const usePomodoroTimer = (): TimerState => {
   const [cycle, setCycle] = useState(0);
   const [workSessionsCompleted, setWorkSessionsCompleted] = useState(0);
   const [cycleCompleteMessage, setCycleCompleteMessage] = useState<string | null>(null);
-  const intervalRef = useRef<number | null>(null);
+  const [buttonLabel, setButtonLabel] = useState("Start");
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const setPhaseTime = (phase: string) => {
-    let duration = workDuration;
+  const setPhaseTime = useCallback((phase: string) => {
+    let duration;
     if (phase === "shortBreak") {
       duration = shortBreakDuration;
     } else if (phase === "longBreak") {
       duration = longBreakDuration;
+    } else {
+      duration = workDuration;
     }
     setMinutes(duration);
     setSeconds(0);
-  };
+  }, [workDuration, shortBreakDuration, longBreakDuration]);
 
   const selectPhase = (phase: string) => {
     setSelectedPhase(phase);
     setCurrentPhase(phase);
-    if (!isActive) {
-      setPhaseTime(phase);
-    } else {
+    setPhaseTime(phase);
+    if (isActive) {
       pause();
-      setPhaseTime(phase);
       setIsPaused(true);
     }
+    setButtonLabel("Start");
   };
 
   const tick = useCallback(() => {
@@ -77,6 +80,7 @@ const usePomodoroTimer = (): TimerState => {
             setCurrentPhase("work");
             setPhaseTime("work");
           }
+          return 59;
         } else {
           setMinutes((prevMinutes) => prevMinutes - 1);
           return 59;
@@ -84,58 +88,63 @@ const usePomodoroTimer = (): TimerState => {
       } else {
         return prevSeconds - 1;
       }
-      return prevSeconds;
     });
-  }, [minutes, currentPhase, workSessionsCompleted, cycle]);
+  }, [minutes, currentPhase, workSessionsCompleted, cycle, setPhaseTime]);
 
   const start = () => {
     setIsPaused(false);
-    if (!isActive) {
-      setPhaseTime(selectedPhase);
       setIsActive(true);
-    } else {
-      setIsActive(true);
+      setButtonLabel("Pause");
+    if (!isPaused) {
+      setCycleCompleteMessage(null);
     }
-    // setCycleCompleteMessage(null);
   };
 
   const pause = () => {
     setIsActive(false);
     setIsPaused(true);
+    setButtonLabel("Continue");
   };
 
   const fastForward = () => {
+    let newPhase = currentPhase;
     if (currentPhase === "work") {
       if (workSessionsCompleted + 1 === 4) {
         setWorkSessionsCompleted(0);
         setCycle(cycle + 1);
-        setCurrentPhase("longBreak");
-        setPhaseTime("longBreak");
+        newPhase = "longBreak";
         setCycleCompleteMessage(`Pomodoro cycle ${cycle + 1} is complete`);
       } else {
         setWorkSessionsCompleted(workSessionsCompleted + 1);
-        setCurrentPhase("shortBreak");
-        setPhaseTime("shortBreak");
+        newPhase = "shortBreak";
       }
     } else if (currentPhase === "shortBreak" || currentPhase === "longBreak") {
-      setCurrentPhase("work");
-      setPhaseTime("work");
+      newPhase = "work";
     }
+    setCurrentPhase(newPhase);
+    setSelectedPhase(newPhase);
+    setPhaseTime(newPhase);
     setIsActive(false);
     setIsPaused(false);
+    setButtonLabel("Start");
   };
 
   useEffect(() => {
     if (isActive) {
-      intervalRef.current = window.setInterval(tick, 1000);
+      intervalRef.current = setInterval(tick, 1000);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isActive, tick]);
+
+  useEffect(() => {
+    console.log(`Current Phase: ${currentPhase}, Minutes: ${minutes}, Seconds: ${seconds}, Button Label: ${buttonLabel}`);
+  }, [currentPhase, minutes, seconds, buttonLabel]);
 
   return { 
     minutes, 
@@ -152,7 +161,8 @@ const usePomodoroTimer = (): TimerState => {
     shortBreakDuration, 
     longBreakDuration,
     cycle,
-    cycleCompleteMessage // Returning the cycle complete message
+    cycleCompleteMessage,
+    buttonLabel
   };
 };
 

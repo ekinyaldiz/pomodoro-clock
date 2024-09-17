@@ -7,11 +7,22 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ onSelectPhase, selectedPhase }) => {
   return (
-    //TODO: Include theme-appropriate coloring
     <div>
-      <button onClick={() => onSelectPhase('work')} style={{ backgroundColor: selectedPhase === 'work' ? 'lightgray' : '' }}>Work</button>
-      <button onClick={() => onSelectPhase('shortBreak')} style={{ backgroundColor: selectedPhase === 'shortBreak' ? 'lightgray' : '' }}>Short Break</button>
-      <button onClick={() => onSelectPhase('longBreak')} style={{ backgroundColor: selectedPhase === 'longBreak' ? 'lightgray' : '' }}>Long Break</button>
+      <button 
+        onClick={() => onSelectPhase('work')} 
+        style={{ backgroundColor: selectedPhase === 'work' ? 'lightgray' : '' }}>
+        Work
+      </button>
+      <button 
+        onClick={() => onSelectPhase('shortBreak')} 
+        style={{ backgroundColor: selectedPhase === 'shortBreak' ? 'lightgray' : '' }}>
+        Short Break
+      </button>
+      <button 
+        onClick={() => onSelectPhase('longBreak')} 
+        style={{ backgroundColor: selectedPhase === 'longBreak' ? 'lightgray' : '' }}>
+        Long Break
+      </button>
     </div>
   );
 };
